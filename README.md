@@ -20,4 +20,4 @@ M = [
 
 ## Contributors
 
-Lukas
+Lukas, Lucas
