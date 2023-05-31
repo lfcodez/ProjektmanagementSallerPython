@@ -28,7 +28,8 @@ def scaleMatrix(points, lambdaValue):
     return newMatrix
 
 
-# spiegelt die points Liste an der übergebenen Achse x, y oder die Ursprungsgerade mit dem angegebnenen Winkel zur x-Achse
+# spiegelt die points Liste an der übergebenen Achse x, y oder die Ursprungsgerade mit dem angegebnenen Winkel
+# zur x-Achse
 def mirrorMatrix(points, axis):
     newMatrix = []
     if axis == "x" or axis == "y":
@@ -54,7 +55,6 @@ def mirrorMatrix(points, axis):
 
 # plottet die beiden listen
 def plotPoints(pointsList, newPointsList):
-
     # plottet die originale Liste
     for j in range(len(pointsList)):
         if j == len(pointsList) - 1:
@@ -111,32 +111,13 @@ def plotPoints(pointsList, newPointsList):
     # Aktiviert ein Grid als Plot Hintergrund
     plt.grid()
 
-
     # Zeigt den Plot
     plt.show()
 
 
-def start():
-    pointsList = input("Enter your PointsList with following syntax: [[x1, y1], [x2, y2],...] or nothing for default: ")
-
-    # default Liste
-    if not pointsList:
-        pointsList = [[1, 1], [5, 1], [5, 5], [3, 8], [1, 5], [5, 5], [1, 1], [1, 5], [5, 1]]
-
-    # Pattern für [[x1, y1], [x2, y2], ...]
-    pattern = r'\[\[\d+,\s*\d+\](,\s*\[\d+,\s*\d+\])*\]'
-
-    # prueft, ob der Input einer solchen Liste wie das Pattern entspricht
-    while not re.match(pattern, str(pointsList)):
-        pointsList = input("Enter your PointsList with following syntax: [[x1, y1], [x2, y2],...] or nothing for "
-                           "default: ")
-        if not pointsList:
-            pointsList = [[1, 1], [5, 1], [5, 5], [3, 8], [1, 5], [5, 5], [1, 1], [1, 5], [5, 1]]
-
-    # konvertiert den eingebenen String mit dem Pattern einer Liste, zu einer Liste
-    pointsList = ast.literal_eval(str(pointsList))
+def inputCheck(pointsList):
+    newPointsList = None
     method = input("Enter how you want to change the matrix: m for mirror, r for rotate and s for scale: ")
-    newPointsList = []
 
     if method == "s":
         lambdaValue = input("Enter the lambda value to scale your matrix with: ")
@@ -167,33 +148,36 @@ def start():
             axis = input("Enter the axis to mirror your matrix: x, y or number of degree for axis gradient: ")
 
         newPointsList = mirrorMatrix(pointsList, axis)
-    else:
-        while method not in ["m", "r", "s"]:
-            method = input("Please enter m, r or s: ")
-            if method == "s":
-                lambdaValue = input("Enter the lambda value to scale your matrix with: ")
-                check = lambdaValue.isnumeric()
-                if not lambdaValue.isnumeric():
-                    check = re.match("^[-\.\d]+[,]?[\d]*[\.]?[\d]?$", lambdaValue)
 
-                while not check:
-                    lambdaValue = input("Enter the lambda value to scale your matrix with: ")
-                    check = lambdaValue.isnumeric()
-                    if not lambdaValue.isnumeric():
-                        check = re.match("^[-\.\d]+[,]?[\d]*[\.]?[\d]?$", lambdaValue)
+    return newPointsList
 
-                newPointsList = scaleMatrix(pointsList, float(lambdaValue))
-            elif method == "r":
-                alphaDeg = input("Enter with how many degrees you want to rotate your matrix: ")
-                while not alphaDeg.isnumeric():
-                    alphaDeg = input("Enter with how many degrees you want to rotate your matrix: ")
-                newPointsList = rotateMatrix(pointsList, int(alphaDeg))
-            elif method == "m":
-                axis = input("Enter the axis to mirror your matrix: x, y or number of degree for axis gradient: ")
-                while not (axis == "x" or axis == "y" or axis.isnumeric()):
-                    axis = input("Enter the axis to mirror your matrix: x, y or number of degree for axis gradient: ")
 
-                newPointsList = mirrorMatrix(pointsList, axis)
+def start():
+    pointsList = input("Enter your PointsList with following syntax: [[x1, y1], [x2, y2],...] or nothing for default: ")
+
+    # default Liste
+    if not pointsList:
+        pointsList = [[1, 1], [5, 1], [5, 5], [3, 8], [1, 5], [5, 5], [1, 1], [1, 5], [5, 1]]
+
+    # Pattern für [[x1, y1], [x2, y2], ...]
+    pattern = r'\[\[\d+,\s*\d+\](,\s*\[\d+,\s*\d+\])*\]'
+
+    # prueft, ob der Input einer solchen Liste wie das Pattern entspricht
+    while not re.match(pattern, str(pointsList)):
+        pointsList = input("Enter your PointsList with following syntax: [[x1, y1], [x2, y2],...] or nothing for "
+                           "default: ")
+        if not pointsList:
+            pointsList = [[1, 1], [5, 1], [5, 5], [3, 8], [1, 5], [5, 5], [1, 1], [1, 5], [5, 1]]
+
+    # konvertiert den eingebenen String mit dem Pattern einer Liste, zu einer Liste
+    pointsList = ast.literal_eval(str(pointsList))
+    newPointsList = None
+
+    # Input check methode
+    newPointsList = inputCheck(pointsList)
+
+    while newPointsList is None:
+        newPointsList = inputCheck(pointsList)
 
     # plot Funktion wird aufgerufen
     plotPoints(pointsList, newPointsList)
