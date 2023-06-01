@@ -5,7 +5,7 @@ import re
 import ast
 
 
-# rotiert die übergebene Liste an Punkten um den gegebenen Winkel in Grad
+# rotates the passed list of points by the given angle in degrees
 def rotateMatrix(points, alphaDeg):
     alphaRad = alphaDeg * pi / 180
     newMatrix = []
@@ -17,7 +17,7 @@ def rotateMatrix(points, alphaDeg):
     return newMatrix
 
 
-# skaliert die points Liste mit dem gegebenen Lambda Wert
+# scales the points list with the given lambda value
 def scaleMatrix(points, lambdaValue):
     newMatrix = []
     scale = Matrix([[lambdaValue, 0], [0, lambdaValue]])
@@ -28,8 +28,8 @@ def scaleMatrix(points, lambdaValue):
     return newMatrix
 
 
-# spiegelt die points Liste an der übergebenen Achse x, y oder die Ursprungsgerade mit dem angegebnenen Winkel
-# zur x-Achse
+# mirrors the points list on the given axis x, y or the origin line with the given angle
+# to the x-axis
 def mirrorMatrix(points, axis):
     newMatrix = []
     if axis == "x" or axis == "y":
@@ -53,7 +53,7 @@ def mirrorMatrix(points, axis):
     return newMatrix
 
 
-# plottet die beiden listen
+# plots the two lists
 def plotPoints(pointsList, newPointsList):
     # plottet die originale Liste
     for j in range(len(pointsList)):
@@ -69,13 +69,13 @@ def plotPoints(pointsList, newPointsList):
             plt.plot(x_values, y_values, color="r", label="before", linestyle="-")
 
     lenNewPointsList = len(newPointsList)
-    # ueberprueft ob die laenge der neuen Liste groeßer ist als die der Originalen, denn bei der Spiegelung
-    # an einer beliebigen Achse wird der Winkel der Achse zur x-Achse an der letzten Stelle gespeichert
-    # um diese Achse spaeter zeichnen zu koennen
+    # checks if the length of the new list is greater than that of the original, because when mirroring
+    # on any axis, the angle of the axis to the x-axis is stored at the last position
+    # to be able to draw this axis later on
     if len(pointsList) != len(newPointsList):
         lenNewPointsList = len(newPointsList) - 1
 
-    # plottet die zweite Liste
+    # plots the second list
     for j in range(lenNewPointsList):
         if j == lenNewPointsList - 1:
             x_values = [newPointsList[j][0], newPointsList[0][0]]
@@ -88,44 +88,44 @@ def plotPoints(pointsList, newPointsList):
             plt.plot(x_values, y_values, color="g", label="after", linestyle="-")
 
     ax = plt.gca()
-    # setzt die scalierung der beiden Achsen gleich
+    # equals the scaling of the two axes
     ax.set_aspect('equal', adjustable='box')
 
-    # Die obere und rechte Achse unsichtbar machen:
+    # Make the upper and right axes invisible:
     ax.spines['right'].set_color('none')
     ax.spines['top'].set_color('none')
 
-    # Die linke Diagrammachse auf den Bezugspunkt '0' der x-Achse legen:
+    # Place the left diagram axis on the reference point '0' of the x-axis:
     ax.spines['left'].set_position(('data', 0))
 
-    # Die untere Diagrammachse auf den Bezugspunkt '0' der y-Achse legen:
+    # Place the lower diagram axis on the reference point '0' of the y-axis:
     ax.spines['bottom'].set_position(('data', 0))
 
-    # zeichnet bei Spiegelung an einer beliebigen Achse diese Achse in den Plot ein
+    # when mirrored on any axis, draws this axis in the plot
     if lenNewPointsList is not len(newPointsList):
         xmin, xmax = ax.get_xlim()
         x = np.linspace(xmin, xmax, 10)
         y = x * tan(newPointsList[lenNewPointsList])
         plt.plot(x, y, color="b", label="mirrorAxis")
 
-    # Aktiviert ein Grid als Plot Hintergrund
+    # Activates a grid as plot background
     plt.grid()
 
-    # Zeigt den Plot
+    # shows the plot
     plt.show()
 
 
-def inputCheck(pointsList):
+def checkAndUseMatrix(pointsList):
     newPointsList = None
     method = input("Enter how you want to change the matrix: m for mirror, r for rotate and s for scale: ")
 
     if method == "s":
         lambdaValue = input("Enter the lambda value to scale your matrix with: ")
-        # isNumeric() ueberprueft ob der String nur Zahlen enthaelt. Negative oder Kommazahlen sind keine Zahlen da sie
-        # "-" und "." enthaltenb
+        # isNumeric() checks if the string contains only numbers. Negative or comma numbers are not numbers because they
+        # contain "-" and ".".
         check = lambdaValue.isnumeric()
         if not lambdaValue.isnumeric():
-            # regex Ausdruck für Komma und negative Zahlen
+            # regex expression for comma and negative numbers
             check = re.match("^[-\.\d]+[,]?[\d]*[\.]?[\d]?$", lambdaValue)
 
         while not check:
@@ -137,13 +137,13 @@ def inputCheck(pointsList):
         newPointsList = scaleMatrix(pointsList, float(lambdaValue))
     elif method == "r":
         alphaDeg = input("Enter with how many degrees you want to rotate your matrix: ")
-        # als Grad eines Winkels nur ganzzahlige positive Werte erlaubt
+        # as degree of an angle only integer positive values allowed
         while not alphaDeg.isnumeric():
             alphaDeg = input("Enter with how many degrees you want to rotate your matrix: ")
         newPointsList = rotateMatrix(pointsList, int(alphaDeg))
     elif method == "m":
         axis = input("Enter the axis to mirror your matrix: x, y or number of degree for axis gradient: ")
-        # Die Achse ist x oder y oder ein Grad Wert als Winkel zur x-Achse
+        # The axis is x or y or a degree value as an angle to the x-axis
         while not (axis == "x" or axis == "y" or axis.isnumeric()):
             axis = input("Enter the axis to mirror your matrix: x, y or number of degree for axis gradient: ")
 
@@ -155,31 +155,30 @@ def inputCheck(pointsList):
 def start():
     pointsList = input("Enter your PointsList with following syntax: [[x1, y1], [x2, y2],...] or nothing for default: ")
 
-    # default Liste
+    # default List
     if not pointsList:
         pointsList = [[1, 1], [5, 1], [5, 5], [3, 8], [1, 5], [5, 5], [1, 1], [1, 5], [5, 1]]
 
-    # Pattern für [[x1, y1], [x2, y2], ...]
+    # pattern for [[x1, y1], [x2, y2], ...]
     pattern = r'\[\[\d+,\s*\d+\](,\s*\[\d+,\s*\d+\])*\]'
 
-    # prueft, ob der Input einer solchen Liste wie das Pattern entspricht
+    # checks if the input corresponds to such a list like the pattern
     while not re.match(pattern, str(pointsList)):
         pointsList = input("Enter your PointsList with following syntax: [[x1, y1], [x2, y2],...] or nothing for "
                            "default: ")
         if not pointsList:
             pointsList = [[1, 1], [5, 1], [5, 5], [3, 8], [1, 5], [5, 5], [1, 1], [1, 5], [5, 1]]
 
-    # konvertiert den eingebenen String mit dem Pattern einer Liste, zu einer Liste
+    # converts the input string with the pattern of a list, to a list
     pointsList = ast.literal_eval(str(pointsList))
-    newPointsList = None
 
-    # Input check methode
-    newPointsList = inputCheck(pointsList)
+    # input check method
+    newPointsList = checkAndUseMatrix(pointsList)
 
     while newPointsList is None:
-        newPointsList = inputCheck(pointsList)
+        newPointsList = checkAndUseMatrix(pointsList)
 
-    # plot Funktion wird aufgerufen
+    # plot function is called
     plotPoints(pointsList, newPointsList)
 
 
