@@ -1,9 +1,12 @@
+import ast
 from sympy import *
 from random import seed, randint
 
 
 # text is the text you want to encode and matrix is the matrix you want to use for encoding
 def encode(text, matrix):
+    # converts the input string or list, to a list
+    matrix = ast.literal_eval(matrix)
     # Hill Cipher works with blocks. The Blocksize is the Dimension of the nxn Matrix
     blockSize = shape(Matrix(matrix))[0]
     textToEncode = str(text)
@@ -34,6 +37,7 @@ def encode(text, matrix):
 
 # the same as the encode function with the only difference its using the Inverse Matrix to decode the text
 def decode(text, invMatrix):
+    invMatrix = ast.literal_eval(invMatrix)
     blockSize = shape(Matrix(invMatrix))[0]
     textToDecode = str(text)
     asciiMatrix = Matrix.zeros(1, blockSize)
@@ -64,22 +68,59 @@ def keyGenerator(dim):
     return K.inv_mod(94), K
 
 
+def is_square_matrix(matrix):
+    try:
+        matrix = ast.literal_eval(matrix)
+    except (ValueError, SyntaxError):
+        return False
+
+    if not isinstance(matrix, list) or not all(isinstance(row, list) for row in matrix):
+        return False
+
+    rows = len(matrix)
+    if rows == 0:
+        return False
+
+    cols = len(matrix[0])
+    if any(len(row) != cols for row in matrix):
+        return False
+
+    return rows == cols
+
+
 def start():
-    dim = input("Enter the Dimension of the Matrix to encode/decode to get a random generated one. "
-                "For a Dimension > 10 it will be slower to generate a working Matrix. "
+    dim = input("Enter the Dimension of the Matrix to encode/decode to get a random generated one. \n"
+                "For a Dimension > 10 it will be slower to generate a working Matrix. \n"
                 "Do not enter anything if you want to use your own Matrix: ")
-    if dim is None:
+    if not dim:
+
         matrix = input("Enter your own Matrix: ")
+        if not is_square_matrix(matrix):
+            while not is_square_matrix(matrix):
+                matrix = input("Enter your own Matrix: ")
         invMatrix = input("Enter the Inverse for your Matrix: ")
+        if not is_square_matrix(invMatrix):
+            while not is_square_matrix(invMatrix):
+                invMatrix = input("Enter the Inverse for your Matrix: ")
     elif dim.isnumeric():
         matrix, invMatrix = keyGenerator(int(dim))
     else:
-        while not (dim.isnumeric() or dim is None):
-            dim = input("Enter the Dimension of the Matrix to encode/decode to get a random generated one. "
-                        "For a Dimension > 10 it will be slower to generate a working Matrix. "
+        while not (dim.isnumeric() or not dim):
+            dim = input("Enter the Dimension of the Matrix to encode/decode to get a random generated one. \n"
+                        "For a Dimension > 10 it will be slower to generate a working Matrix. \n"
                         "Do not enter anything if you want to use your own Matrix: ")
 
-        matrix, invMatrix = keyGenerator(int(dim))
+        if not dim:
+            matrix = input("Enter your own Matrix: ")
+            if not is_square_matrix(matrix):
+                while not is_square_matrix(matrix):
+                    matrix = input("Enter your own Matrix: ")
+            invMatrix = input("Enter the Inverse for your Matrix: ")
+            if not is_square_matrix(invMatrix):
+                while not is_square_matrix(invMatrix):
+                    invMatrix = input("Enter the Inverse for your Matrix: ")
+        else:
+            matrix, invMatrix = keyGenerator(int(dim))
 
     text = input("Enter the text you want to encode and decode: ")
     print("Matrix:")
