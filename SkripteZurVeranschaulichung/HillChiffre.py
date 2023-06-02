@@ -6,7 +6,9 @@ from random import seed, randint
 # text is the text you want to encode and matrix is the matrix you want to use for encoding
 def encode(text, matrix):
     # converts the input string or list, to a list
-    matrix = ast.literal_eval(matrix)
+    if str(type(matrix)) != "<class 'sympy.matrices.dense.MutableDenseMatrix'>":
+        matrix = ast.literal_eval(str(matrix))
+
     # Hill Cipher works with blocks. The Blocksize is the Dimension of the nxn Matrix
     blockSize = shape(Matrix(matrix))[0]
     textToEncode = str(text)
@@ -37,7 +39,8 @@ def encode(text, matrix):
 
 # the same as the encode function with the only difference its using the Inverse Matrix to decode the text
 def decode(text, invMatrix):
-    invMatrix = ast.literal_eval(invMatrix)
+    if str(type(invMatrix)) != "<class 'sympy.matrices.dense.MutableDenseMatrix'>":
+        invMatrix = ast.literal_eval(str(invMatrix))
     blockSize = shape(Matrix(invMatrix))[0]
     textToDecode = str(text)
     asciiMatrix = Matrix.zeros(1, blockSize)
@@ -53,8 +56,7 @@ def decode(text, invMatrix):
         for j in range(0, blockSize):
             decodedText = str(decodedText) + chr(decodedMatrix[j] + 32)
 
-    print("Verschluesselter Text: " + textToDecode)
-    print("Entschluesselter Text: " + decodedText)
+    return decodedText
 
 
 # Generates a random Matrix and its Inverse for the given Dimension
@@ -65,12 +67,12 @@ def keyGenerator(dim):
         for i in range(0, dim):
             for j in range(0, dim):
                 K[i, j] = randint(0, 93)
-    return K.inv_mod(94), K
+    return K, K.inv_mod(94)
 
 
 def is_square_matrix(matrix):
     try:
-        matrix = ast.literal_eval(matrix)
+        matrix = ast.literal_eval(str(matrix))
     except (ValueError, SyntaxError):
         return False
 
@@ -128,7 +130,10 @@ def start():
     print("Inverse:")
     pprint(invMatrix)
     encoded = encode(text, matrix)
-    decode(encoded, invMatrix)
+    decoded = decode(encoded, invMatrix)
+    print("Original Text: " + text)
+    print("Verschluesselter Text: " + encoded)
+    print("Entschluesselter Text: " + decoded)
 
 
 start()
