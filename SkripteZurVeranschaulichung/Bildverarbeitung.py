@@ -11,7 +11,7 @@ def rotateMatrix(points, alphaDeg):
     newMatrix = []
     rotate = Matrix([[cos(alphaRad), -sin(alphaRad)], [sin(alphaRad), cos(alphaRad)]])
     for i in range(len(points)):
-        rotated = Matrix([points[i]]) * rotate
+        rotated = rotate * transpose(Matrix([points[i]]))
         newMatrix.append([rotated[0], rotated[1]])
 
     return newMatrix
