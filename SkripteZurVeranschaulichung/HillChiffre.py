@@ -114,6 +114,7 @@ def start():
             if not is_square_matrix(invMatrix):
                 while not is_square_matrix(invMatrix):
                     invMatrix = input("Enter your own Inverse Matrix to decode: ")
+            matrix = Matrix(ast.literal_eval(invMatrix)).inv_mod(94)
             case = "d"
         else:
             while userInput not in ["e", "d"]:
@@ -133,6 +134,7 @@ def start():
                 if not is_square_matrix(invMatrix):
                     while not is_square_matrix(invMatrix):
                         invMatrix = input("Enter your own Inverse Matrix to decode: ")
+                matrix = Matrix(ast.literal_eval(invMatrix)).inv_mod(94)
                 case = "d"
 
     elif dim.isnumeric():
@@ -161,6 +163,7 @@ def start():
                 if not is_square_matrix(invMatrix):
                     while not is_square_matrix(invMatrix):
                         invMatrix = input("Enter your own Inverse Matrix to decode: ")
+                matrix = Matrix(ast.literal_eval(invMatrix)).inv_mod(94)
                 case = "d"
             else:
                 while userInput not in ["e", "d"]:
@@ -179,6 +182,7 @@ def start():
                     if not is_square_matrix(invMatrix):
                         while not is_square_matrix(invMatrix):
                             invMatrix = input("Enter your own Inverse Matrix to decode: ")
+                    matrix = Matrix(ast.literal_eval(invMatrix)).inv_mod(94)
                     case = "d"
         else:
             matrix, invMatrix = keyGenerator(int(dim))
@@ -223,6 +227,11 @@ def start():
         print(invMatrix)
         print("")
         pprint(Matrix(ast.literal_eval(str(invMatrix))))
+        print("")
+        print("Original Matrix:")
+        print(matrix)
+        print("")
+        pprint(matrix)
         print("")
         decoded = decode(text, invMatrix)
         print("Original Text: " + text)
