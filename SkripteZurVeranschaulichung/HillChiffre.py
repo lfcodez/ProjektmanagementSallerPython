@@ -3,8 +3,8 @@ from sympy import *
 from random import seed, randint
 
 
-# text is the text you want to encode and matrix is the matrix you want to use for encoding
-def encode(text, matrix):
+# text is the text you want to code and matrix is the matrix you want to use for coding
+def code(text, matrix):
     # converts the input string or list, to a list
     if str(type(matrix)) != "<class 'sympy.matrices.dense.MutableDenseMatrix'>":
         matrix = ast.literal_eval(str(matrix))
@@ -35,29 +35,6 @@ def encode(text, matrix):
             encodedText = str(encodedText) + chr(encodedMatrix[j] + 32)
 
     return encodedText
-
-
-# the same as the encode function with the only difference its using the Inverse Matrix to decode the text
-def decode(text, invMatrix):
-    if str(type(invMatrix)) != "<class 'sympy.matrices.dense.MutableDenseMatrix'>":
-        invMatrix = ast.literal_eval(str(invMatrix))
-    blockSize = shape(Matrix(invMatrix))[0]
-    textToDecode = str(text)
-    asciiMatrix = Matrix.zeros(1, blockSize)
-    decodedText = ""
-    for i in range(0, len(textToDecode), blockSize):
-        for j in range(0, blockSize):
-            if (i + j) >= len(textToDecode):
-                asciiValue = -1
-            else:
-                asciiValue = ord(textToDecode[i + j]) - 32
-            asciiMatrix[j] = asciiValue
-        decodedMatrix = (asciiMatrix * Matrix(invMatrix)) % 94
-        for j in range(0, blockSize):
-            decodedText = str(decodedText) + chr(decodedMatrix[j] + 32)
-
-    return decodedText
-
 
 # Generates a random Matrix and its Inverse for the given Dimension
 def keyGenerator(dim):
@@ -200,8 +177,8 @@ def start():
         print("")
         pprint(invMatrix)
         print("")
-        encoded = encode(text, matrix)
-        decoded = decode(encoded, invMatrix)
+        encoded = code(text, matrix)
+        decoded = code(encoded, invMatrix)
         print("Original Text: " + text)
         print("Verschluesselter Text: " + encoded)
         print("Entschluesselter Text: " + decoded)
@@ -217,7 +194,7 @@ def start():
         print("")
         pprint(invMatrix)
         print("")
-        encoded = encode(text, matrix)
+        encoded = code(text, matrix)
         print("Original Text: " + text)
         print("Verschluesselter Text: " + encoded)
 
@@ -233,7 +210,7 @@ def start():
         print("")
         pprint(matrix)
         print("")
-        decoded = decode(text, invMatrix)
+        decoded = code(text, invMatrix)
         print("Original Text: " + text)
         print("Entschluesselter Text: " + decoded)
 
