@@ -93,53 +93,140 @@ def is_square_matrix(matrix):
 def start():
     dim = input("Enter the Dimension of the Matrix to encode/decode to get a random generated one. \n"
                 "For a Dimension > 10 it will be slower to generate a working Matrix. \n"
-                "Do not enter anything if you want to use your own Matrix: ")
+                "Enter nothing if you want to use your own Matrix: ")
+    matrix = None
+    invMatrix = None
+    case = None
     if not dim:
+        userInput = input("To encode enter e, to decode enter d: ")
+        if userInput == "e":
+            matrix = input("Enter your own Matrix to encode: ")
+            if not is_square_matrix(matrix):
+                while not is_square_matrix(matrix):
+                    matrix = input("Enter your own Matrix to encode: ")
+            while gcd(Matrix(ast.literal_eval(matrix)).det(), 94) != 1:
+                matrix = input("Enter your own Matrix to encode: ")
+            invMatrix = Matrix(ast.literal_eval(matrix)).inv_mod(94)
+            case = "e"
 
-        matrix = input("Enter your own Matrix: ")
-        if not is_square_matrix(matrix):
-            while not is_square_matrix(matrix):
-                matrix = input("Enter your own Matrix: ")
-        invMatrix = input("Enter the Inverse for your Matrix: ")
-        if not is_square_matrix(invMatrix):
-            while not is_square_matrix(invMatrix):
-                invMatrix = input("Enter the Inverse for your Matrix: ")
+        elif userInput == "d":
+            invMatrix = input("Enter your own Inverse Matrix to decode: ")
+            if not is_square_matrix(invMatrix):
+                while not is_square_matrix(invMatrix):
+                    invMatrix = input("Enter your own Inverse Matrix to decode: ")
+            case = "d"
+        else:
+            while userInput not in ["e", "d"]:
+                userInput = input("To encode enter e, to decode enter d: ")
+            if userInput == "e":
+                matrix = input("Enter your own Matrix to encode: ")
+                if not is_square_matrix(matrix):
+                    while not is_square_matrix(matrix):
+                        matrix = input("Enter your own Matrix to encode: ")
+                while gcd(Matrix(ast.literal_eval(matrix)).det(), 94) != 1:
+                    matrix = input("Enter your own Matrix to encode: ")
+                invMatrix = Matrix(ast.literal_eval(matrix)).inv_mod(94)
+                case = "e"
+
+            elif userInput == "d":
+                invMatrix = input("Enter your own Inverse Matrix to decode: ")
+                if not is_square_matrix(invMatrix):
+                    while not is_square_matrix(invMatrix):
+                        invMatrix = input("Enter your own Inverse Matrix to decode: ")
+                case = "d"
+
     elif dim.isnumeric():
         matrix, invMatrix = keyGenerator(int(dim))
+        case = "dim"
     else:
         while not (dim.isnumeric() or not dim):
             dim = input("Enter the Dimension of the Matrix to encode/decode to get a random generated one. \n"
                         "For a Dimension > 10 it will be slower to generate a working Matrix. \n"
-                        "Do not enter anything if you want to use your own Matrix: ")
+                        "Enter nothing if you want to use your own Matrix: ")
 
         if not dim:
-            matrix = input("Enter your own Matrix: ")
-            if not is_square_matrix(matrix):
-                while not is_square_matrix(matrix):
-                    matrix = input("Enter your own Matrix: ")
-            invMatrix = input("Enter the Inverse for your Matrix: ")
-            if not is_square_matrix(invMatrix):
-                while not is_square_matrix(invMatrix):
-                    invMatrix = input("Enter the Inverse for your Matrix: ")
+            userInput = input("To encode enter e, to decode enter d: ")
+            if userInput == "e":
+                matrix = input("Enter your own Matrix to encode: ")
+                if not is_square_matrix(matrix):
+                    while not is_square_matrix(matrix):
+                        matrix = input("Enter your own Matrix to encode: ")
+                while gcd(Matrix(ast.literal_eval(matrix)).det(), 94) != 1:
+                    matrix = input("Enter your own Matrix to encode: ")
+                invMatrix = Matrix(ast.literal_eval(matrix)).inv_mod(94)
+                case = "e"
+
+            elif userInput == "d":
+                invMatrix = input("Enter your own Inverse Matrix to decode: ")
+                if not is_square_matrix(invMatrix):
+                    while not is_square_matrix(invMatrix):
+                        invMatrix = input("Enter your own Inverse Matrix to decode: ")
+                case = "d"
+            else:
+                while userInput not in ["e", "d"]:
+                    userInput = input("To encode enter e, to decode enter d: ")
+                if userInput == "e":
+                    matrix = input("Enter your own Matrix to encode: ")
+                    if not is_square_matrix(matrix):
+                        while not is_square_matrix(matrix):
+                            matrix = input("Enter your own Matrix to encode: ")
+                    while gcd(Matrix(ast.literal_eval(matrix)).det(), 94) != 1:
+                        matrix = input("Enter your own Matrix to encode: ")
+                    invMatrix = Matrix(ast.literal_eval(matrix)).inv_mod(94)
+                    case = "e"
+                elif userInput == "d":
+                    invMatrix = input("Enter your own Inverse Matrix to decode: ")
+                    if not is_square_matrix(invMatrix):
+                        while not is_square_matrix(invMatrix):
+                            invMatrix = input("Enter your own Inverse Matrix to decode: ")
+                    case = "d"
         else:
             matrix, invMatrix = keyGenerator(int(dim))
+            case = "dim"
 
-    text = input("Enter the text you want to encode and decode: ")
-    print("Matrix:")
-    print(matrix)
-    print("")
-    pprint(matrix)
-    print("")
-    print("Inverse:")
-    print(invMatrix)
-    print("")
-    pprint(invMatrix)
-    print("")
-    encoded = encode(text, matrix)
-    decoded = decode(encoded, invMatrix)
-    print("Original Text: " + text)
-    print("Verschluesselter Text: " + encoded)
-    print("Entschluesselter Text: " + decoded)
+    if case == "dim":
+        text = input("Enter the text you want to encode and decode: ")
+        print("Matrix:")
+        print(matrix)
+        print("")
+        pprint(matrix)
+        print("")
+        print("Inverse:")
+        print(invMatrix)
+        print("")
+        pprint(invMatrix)
+        print("")
+        encoded = encode(text, matrix)
+        decoded = decode(encoded, invMatrix)
+        print("Original Text: " + text)
+        print("Verschluesselter Text: " + encoded)
+        print("Entschluesselter Text: " + decoded)
+    elif case == "e":
+        text = input("Enter the text you want to encode: ")
+        print("Matrix:")
+        print(matrix)
+        print("")
+        pprint(Matrix(ast.literal_eval(str(matrix))))
+        print("")
+        print("Inverse:")
+        print(invMatrix)
+        print("")
+        pprint(invMatrix)
+        print("")
+        encoded = encode(text, matrix)
+        print("Original Text: " + text)
+        print("Verschluesselter Text: " + encoded)
+
+    elif case == "d":
+        text = input("Enter the text you want to decode: ")
+        print("Inverse:")
+        print(invMatrix)
+        print("")
+        pprint(Matrix(ast.literal_eval(str(invMatrix))))
+        print("")
+        decoded = decode(text, invMatrix)
+        print("Original Text: " + text)
+        print("Entschluesselter Text: " + decoded)
 
 
 start()
