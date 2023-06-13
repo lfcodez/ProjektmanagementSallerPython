@@ -11,30 +11,31 @@ def code(text, matrix):
 
     # Hill Cipher works with blocks. The Blocksize is the Dimension of the nxn Matrix
     blockSize = shape(Matrix(matrix))[0]
-    textToEncode = str(text)
+    textToCode = str(text)
     # prepare the asciiMatrix to safe the ascii codes for our characters in
     asciiMatrix = Matrix.zeros(1, blockSize)
-    encodedText = ""
+    codedText = ""
 
     # loops through the given text with steps of blockSize
-    for i in range(0, len(textToEncode), blockSize):
+    for i in range(0, len(textToCode), blockSize):
         # loops through one block
         for j in range(0, blockSize):
             # if the length of the given text does fill all spaces in every block, it gets filled by -1
-            if (i + j) >= len(textToEncode):
+            if (i + j) >= len(textToCode):
                 asciiValue = -1
             else:
                 # gets the ascii code from the given character and subtracts 32
                 # because the first 32 ascii codes are not printable
-                asciiValue = ord(textToEncode[i + j]) - 32
+                asciiValue = ord(textToCode[i + j]) - 32
             asciiMatrix[j] = asciiValue
-        # encodes the asciiMatrix. mod 94 at the end because there are 94 ascii codes we are using
-        encodedMatrix = (asciiMatrix * Matrix(matrix)) % 94
-        # converts the encodes ascii codes to characters
+        # codes the asciiMatrix. mod 94 at the end because there are 94 ascii codes we are using
+        codedMatrix = (asciiMatrix * Matrix(matrix)) % 94
+        # converts the coded ascii codes to characters
         for j in range(0, blockSize):
-            encodedText = str(encodedText) + chr(encodedMatrix[j] + 32)
+            codedText = str(codedText) + chr(codedMatrix[j] + 32)
 
-    return encodedText
+    return codedText
+
 
 # Generates a random Matrix and its Inverse for the given Dimension
 def keyGenerator(dim):
